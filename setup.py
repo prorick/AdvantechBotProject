@@ -7,5 +7,5 @@ setuptools.setup(
     url='https://github.com/mjturi/Advantech',
     author='Matthew Turi',
     packages=setuptools.find_packages(),
-    python_requires='>=3.7',
+    python_requires='>=3.9',
 )

@@ -18,7 +18,7 @@
    - **Results:** This script has been extremely successful and obtains ~250 employees per different run. Over time, I have added more fields like location, and have been editing the script to match up with the master spreadsheet format. 
 - Script to hunt through google using filetype: *** query.
    - *doc_search.py*
-   - **Results:** This script was relatively unsuccessful. The webdriver had issues saving certain files and ended up downloading numerous extra junk + duplicates. Still a work in progress if needed.
+   - 6
 
 ### Data Cleaning
 - Wrote a single script to sequentially: 

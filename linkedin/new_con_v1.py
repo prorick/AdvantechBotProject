@@ -13,7 +13,7 @@ def bot():
     # set paths for webdriver + initialize
     options = Options()
     options.add_argument('--incognito')
-    options.binary_location = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe'
+    options.binary_location = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
     driver.maximize_window()
@@ -26,35 +26,36 @@ def bot():
     time.sleep(1)
 
     # enter login info
-    user = driver.find_element_by_xpath('/html/body/div/main/div[2]/form/div[1]/input')
-    user.send_keys('EMAIL') # replace with user credentials
-    pswd = driver.find_element_by_xpath('/html/body/div/main/div[2]/form/div[2]/input')
-    pswd.send_keys('PASSWORD')  # replace with user credentials
+    user = driver.find_element_by_xpath('/html/body/div/main/div[2]/div[1]/form/div[1]/input')
+    user.send_keys('alanparkerc@gmail.com') # replace with user credentials
+    pswd = driver.find_element_by_xpath('/html/body/div/main/div[2]/div[1]/form/div[2]/input')
+    pswd.send_keys('Calikona123')  # replace with user credentials
+    driver.find_element_by_xpath('/html/body/div/main/div[2]/div[1]/form/div[3]/button').click()
 
     # submit form, try catch because it was having issues finding the button by a single absolute path
-    try:
-        driver.find_element_by_xpath('/html/body/div/main/div[2]/form/div[4]').click()
-    except Exception:
-        try:
-            driver.find_element_by_xpath('/html/body/div/main/div[2]/form/div[3]/button').click()
-        except Exception:
-            driver.find_element_by_xpath('//*[@id="app__container"]/main/div[2]/form/div[4]/button').click()
-            try:
-                driver.find_element_by_link_text('Sign in').click()
-            except Exception:
-                quit()
+    #try:
+    #    driver.find_element_by_xpath('/html/body/div/main/div[2]/form/div[4]').click()
+    #except Exception:
+    #    try:
+    #        driver.find_element_by_xpath('/html/body/div/main/div[2]/form/div[3]/button').click()
+    #    except Exception:
+    #        driver.find_element_by_xpath('//*[@id="app__container"]/main/div[2]/form/div[4]/button').click()
+    #        try:
+    #            driver.find_element_by_link_text('Sign in').click()
+    #        except Exception:
+    #            quit()
 
-    time.sleep(1)
+    time.sleep(3)
     # try catch for mobile authentication, seems unnecessary as of now
-    try:
-        driver.find_element_by_xpath('/html/body/div/div[1]/section/div[2]/div/article/footer/div/div/button').click()
-    except Exception:
-        print('No auth needed')
+    #try:
+    #    driver.find_element_by_xpath('/html/body/div/div[1]/section/div[2]/div/article/footer/div/div/button').click()
+    #except Exception:
+    #    print('No auth needed')
 
     page_tracker = 1
 
     # boolean li query, must first search in google then copy search address (fill site var)
-    site = ''
+    site = input("Enter the LinkedIn hack search: ")
     driver.get(site)
 
     # main loop for handling bot
@@ -76,6 +77,7 @@ def bot():
 
             time.sleep(2)
 
+            #probably gonna change this
             try: # block to find their name in linkedin profile, if unable to, move on to next person from search
                 con_name = driver.find_element_by_xpath(
                     '/html/body/div[7]/div[3]/div/div/div/div/div[2]/main/div[1]/section/div[2]/div[2]/div[1]/ul[1]/li[1]')

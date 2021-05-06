@@ -20,7 +20,7 @@ def bot():
     # set paths for webdriver + initialize
     options = Options()
     options.add_argument('--incognito')
-    options.binary_location = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe'
+    options.binary_location = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
     
     driver.maximize_window()
@@ -30,9 +30,9 @@ def bot():
     time.sleep(1)
     
     # enter login info
-    user = driver.find_element_by_xpath('/html/body/div/main/div[2]/form/div[1]/input')
+    user = driver.find_element_by_xpath('/html/body/div/main/div[2]/div[1]/form/div[1]/input')#updated  
     user.send_keys('EMAIL') # REPLACE WITH USER EMAIL
-    pswd = driver.find_element_by_xpath('/html/body/div/main/div[2]/form/div[2]/input')
+    pswd = driver.find_element_by_xpath('/html/body/div/main/div[2]/div[1]/form/div[2]/input')#updated
     pswd.send_keys('PASSWORD') # REPLACE WITH USER PASSWORD
     
     # submit form, try catch because it was having issues finding the button by a single absolute path

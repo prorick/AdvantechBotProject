@@ -12,38 +12,50 @@ def bot():
     options.add_argument('--incognito')
     options.binary_location = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-
+ 
     driver.maximize_window()
-
-    driver.get('https://www.bgov.com/auth/sign_in') #get bloomberg url
+ 
+    driver.get('https://www.bgov.com/next/opportunity_search#/') #get bloomberg url
     time.sleep(1)
-
+ 
     #login
+    #email = driver.find_element_by_xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[2]/form/div[1]/div[2]/input')
     email = driver.find_element_by_xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[2]/form/div[1]/div[2]/input')
-    email.send_keys('EMAIL') # replace with user credentials
-
-    driver.find_element_by_xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[2]/form/div[2]/div[2]/input').click()
+ 
+    email.send_keys('ptoro@advantechglobal.org') # replace with user credentials
+ 
+    #not needed as username and password are on same page
+    #driver.find_element_by_xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[2]/form/div[2]/div[2]/input').click()
     time.sleep(1)
-
+ 
+    #pswd = driver.find_element_by_xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[2]/form/div[2]/div[2]/input')
     pswd = driver.find_element_by_xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[2]/form/div[2]/div[2]/input')
+ 
     pswd.send_keys('PASSWORD') # replace with user credentials
-
+ 
     driver.find_element_by_xpath('').click() #change this?
     time.sleep(2)
-
-
+ 
     #this must be done with access to bloomberg
-    try:
-        driver.find_element_by_xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[2]/form/button').click()
-    except Exception:
-        print('No welcome message')
+    #try: # need to check this
+    #    driver.find_element_by_xpath("/html/body/div[@id='app']/div/div[@class='content-wrapper']/div[@class='grid-wrapper']/div[@class='over-grid-content']/div[@class='content-area']/div[@class='content-area']/form/button[@class='button--primary sign-in-button ft-button-2Pla ft-buttonBlock-311V']").click()
+    #except Exception:
+    #    print('No welcome message')
 
-    driver.find_element_by_xpath('').click()
+    pswd = driver.find_element_by_xpath("").click()
 
-    driver.find_element_by_xpath('').click()
+    driver.find_element_by_xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[2]/form/div[2]/div[2]/input').click()
+    time.sleep(3)
+    driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div[4]/div/div[2]/div/div[5]/div[2]/svg/path').click()
     time.sleep(1)
-    driver.find_element_by_xpath('').click()
+    driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div[4]/div/div[2]/div/div[7]/div[4]/svg/path').click()
     time.sleep(1)
+    keywords = driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div[1]/div/div/div/div[2]/div/textarea')
+    keywords.send_keys('navy parsons')
+    time.sleep(2)
+    driver.find_elements_by_xpath('/html/body/div[2]/div/div[2]/div/div[1]/div/div/button').click()
+    time.sleep(4)
+    driver.find_elements_by_xpath('/html/body/div[2]/div/div[2]/div/div[4]/span/div[1]/div/div/div[1]/div[3]/a').click()
 
     opp_count = 1
     # interested criteria list
@@ -52,9 +64,12 @@ def bot():
                 'Interested Companies', 'Bidders List', 'Industry Day Procurement List'] #will likely change for Bloomberg
 
     main_window = driver.current_window_handle
-
+    
     while True:
-        try: # naviagte to your opportunites, and start iterating through them, then execute the same checks as the nonsaved ops bot
+        try: # navigate to your opportunites, and start iterating through them, then execute the same checks as the nonsaved ops bot
+
+            industryDay = driver.find_element_by_name('')
+
             opp = driver.find_element_by_xpath('' + str(opp_count) + '')
             opp.send_keys(Keys.CONTROL + Keys.RETURN)
             driver.switch_to.window(driver.window_handles[1])

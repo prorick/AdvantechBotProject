@@ -74,33 +74,34 @@ def bot():
         #     continue
         table_count = 2
         while True: # if the script could find the resources tab and it has documents in it, it will check to see if their titles match any fo the criteria (very general)
-            try:
+            # try:
                 
                 opportunities = driver.find_elements_by_class_name('rowListView')
 
                 for x in opportunities:
 
-                    driver.find_element_by_xpath('/html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[' + str(table_count) +']/h3/a').click()
-
+                    driver.find_element_by_xpath('//*[@id="list_item_OPP205725"]/h3/a').click() #/html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[3]/h3/a
+                    time.sleep(4)
                     table_count = table_count + 1
 
                     driver.find_element_by_link_text('Resources').click()
-
+                    time.sleep(4)
                     row_text = driver.find_elements_by_class_name('sorting_2')
                 
                     for r in row_text:
-                        if any(r for c in criteria):
-                            print('found something')
-                            driver.find_elements_by_partial_link_text('industry day').click()
+                        if any(criteria):
+                            print('found something'+ str(table_count))
+                            #driver.find_element_by_partial_link_text('industry day').click()
                             #must click on file to download it
 
                     driver.execute_script("window.history.go(-2)")
+                    time.sleep(4)
                     #must go back to original website here
                             
             
-            except Exception:
-                print('out of opp resources links')
-                break
+            # except Exception:
+            #     print('out of opp resources links')
+            #     break
         driver.close()
         
 bot()

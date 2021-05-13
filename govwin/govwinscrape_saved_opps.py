@@ -20,27 +20,30 @@ def bot():
 
     #login
     email = driver.find_element_by_xpath('/html/body/div[2]/div/div/div[1]/form/div/div/input')
-    email.send_keys('EMAIL') # replace with user credentials
+    email.send_keys('eramond@advantechglobal.org') # replace with user credentials
 
     driver.find_element_by_xpath('/html/body/div[2]/div/div/div[1]/form/div/span/input[1]').click()
     time.sleep(1)
 
     pswd = driver.find_element_by_xpath('/html/body/div[2]/div/div/div[1]/form/div/div[2]/input')
-    pswd.send_keys('PASSWORD') # replace with user credentials
+    pswd.send_keys('Advantech1973!') # replace with user credentials
 
     driver.find_element_by_xpath('/html/body/div[2]/div/div/div[1]/form/div/span/input[1]').click()
     time.sleep(2)
 
-    driver.find_element_by_xpath('/html/body/div[4]/div[2]/div[4]/ul/li[6]/a').click() #clicks on my opportunities
+    try:
+        driver.find_element_by_xpath('/html/body/div[12]/div/button').click()
+    except Exception:
+        print('No welcome message')
 
-    
-    opp_count = int(input())
-    table_count = int(input())
-    months_out = 18
-    opp_seller = 'Navy'
-    current_month = 5
-    current_year = 2021
-    
+    driver.find_element_by_xpath('/html/body/div[4]/div[2]/div[4]/ul/li[6]/a').click()
+
+    # driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[3]/div/div/div[3]/form/div/div/div[2]/div[1]/div/div/label/select').click()
+    # time.sleep(1)
+    # driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[3]/div/div/div[3]/form/div/div/div[2]/div[1]/div/div/label/select/option[5]').click()
+    # time.sleep(1)
+
+    opp_count = 1
     # interested criteria list
     criteria = ['Industry Day', 'Industry Day attendees list', 'Vendors List', 'Event Attachments', 'Contractors List',
                 'Interested Parties List', 'Registration List', 'Participants Lists', 'Attendees Lists', 'Attendee',
@@ -48,36 +51,20 @@ def bot():
 
     main_window = driver.current_window_handle
 
-    while True:#might want to consider using another loop besides this
-        try:#navigate to your opportunites, and start iterating through them, then execute the same checks as the nonsaved ops bot
-
-            #this all checks if the opportunites meet the criteria that we want:
-
-            month_finder = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[3]/div/div/div[4]/form/div/div/div[3]/div/div[2]/table/tbody/tr[' + str(opp_count) + ']/td[10]')
-            year_finder = month_finder[3:6]
-            month_finder = month_finder[0:1]
-            opp_seller_finder = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[3]/div/div/div[4]/form/div/div/div[3]/div/div[2]/table/tbody/tr[' + str(opp_count) + ']/td[7]')
-            opp_seller_finder = opp_seller_finder[0:3]
-
-            month_finder = (12 * (year_finder - current_year)) + (month_finder - current_month)
-        
-        
-        if ((months_out >= month_finder) && (opp_seller == opp_seller_finder)) {
-
-            opp = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[3]/div/div/div[4]/form/div/div/div[3]/div/div[2]/table/tbody/tr[' + str(opp_count) + ']/td[6]/a') #/html/body/div[4]/div[4]/div/div[3]/div/div/div[3]/form/div/div/div[3]/div/div[2]/table/tbody/tr[' + str(opp_count) + ']/td[6]/a (old path, new one might be wrong)
-            #updated tab
+    while True:
+        try: # naviagte to your opportunites, and start iterating through them, then execute the same checks as the nonsaved ops bot
+            opp = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[3]/div/div/div[4]/form/div/div/div[3]/div/div[2]/table/tbody/tr[' + str(opp_count) +']/td[6]/a')
             opp.send_keys(Keys.CONTROL + Keys.RETURN)
             driver.switch_to.window(driver.window_handles[1])
             time.sleep(3)
 
-            driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[1]/ul/li[6]/a').click() #/html/body/div[4]/div[4]/div/div[1]/ul/li[6]/a (old path)
+            driver.find_element_by_link_text("Resources").click()
             time.sleep(3)
 
-            
-            while True: # might want to consider using another loop besides this
+            table_count = 1
+            while True:
                 try:
-                    row = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[8]/div/div/div[3]/div/div/div[2]/div[1]/div[3]/table/tbody/tr[' + str(table_count) + ']/td[1]/a') #/html/body/div[4]/div[4]/div/div[8]/div/div/div[3]/div/div/div[2]/div[1]/div[3]/table/tbody/tr[' + str(table_count) + ']/td[2]/a (old path)
-                    #updated
+                    row = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[8]/div/div/div[3]/div/div/div[2]/div[1]/div[3]/table/tbody/tr[' + str(table_count) + ']/td[2]/a')
                     row_text = str(row.text)
                     row_text = row_text.split(' ')
                     print(row_text)
@@ -94,11 +81,7 @@ def bot():
             driver.close()
             driver.switch_to.window(main_window)
             opp_count += 1
-
-        }
-
         except Exception:
             print('out of opps')
             break
 bot()
-

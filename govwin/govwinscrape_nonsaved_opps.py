@@ -10,7 +10,8 @@ import schedule
 def bot():
     
     # These need to be set to potentially a list of ids or search criteria we are looking for BEFORE ran
-    IDS = range(198687, 201682, 1)
+    #IDS = range(198687, 201682, 1)
+    IDS = ['192252']
     print(len(IDS))
     
     # criteria for downlaoding a resouce attachement
@@ -21,7 +22,8 @@ def bot():
     # loop through all given op id numbers
     for op in IDS:
         directory = str(op)
-        parent_dir = 'C:\Bots\downloads' # specify your download directory
+        #parent_dir = 'C:\Bots\downloads' # specify your download directory
+        parent_dir = '/Users/prothit/Desktop/advantech' # specify your download directory (MAC)
         
         # set download path
         path = os.path.join(parent_dir, directory)
@@ -32,7 +34,9 @@ def bot():
         # DRIVER WITH SET DOWNLOAD LOCATION
         options = Options()
         options.add_argument('--incognito')
-        options.binary_location = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+        #options.binary_location = 'C:/Program Files/Google/Chrome/Application/chrome.exe' #for windows
+        options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' #for macs
+
         prefs = {'download.default_directory': str(path)}
         options.add_experimental_option('prefs', prefs)
         driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
@@ -78,6 +82,8 @@ def bot():
 
             driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[1]/ul/li[6]/a').click()
             time.sleep(10)
+            driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[8]/div/div/div[1]/ul/li[3]/a').click()
+            time.sleep(5)
 
             table_count = 1
         except Exception:
@@ -86,7 +92,10 @@ def bot():
 
         while True: # if the script could find the resources tab and it has documents in it, it will check to see if their titles match any fo the criteria (very general)
             try:
-                row = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[8]/div/div/div[3]/div/div/div[2]/div[1]/div[3]/table/tbody/tr['+ str(table_count) +']/td[1]/a')
+                print('made it to the resource tab begin')
+                #row = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[8]/div/div/div[3]/div/div/div[2]/div[1]/div[3]/table/tbody/tr['+ str(table_count) +']/td[1]/a')
+                row = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[8]/div/div/div[5]/div/div/div[2]/div[1]/div[3]/table/tbody/tr['+ str(table_count) +']/td[3]/a')
+
                 row_text = str(row.text)
                 row_text = row_text.split(' ')
                 print(row_text)
@@ -97,6 +106,7 @@ def bot():
                         print('found something')
                         time.sleep(5)
                         break
+                print('made it to the resource tab end')
             except Exception:
                 print('out of opp resources links')
                 break

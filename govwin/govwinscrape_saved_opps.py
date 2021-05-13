@@ -20,13 +20,13 @@ def bot():
 
     #login
     email = driver.find_element_by_xpath('/html/body/div[2]/div/div/div[1]/form/div/div/input')
-    email.send_keys('eramond@advantechglobal.org') # replace with user credentials
+    email.send_keys('') # replace with user credentials
 
     driver.find_element_by_xpath('/html/body/div[2]/div/div/div[1]/form/div/span/input[1]').click()
     time.sleep(1)
 
     pswd = driver.find_element_by_xpath('/html/body/div[2]/div/div/div[1]/form/div/div[2]/input')
-    pswd.send_keys('Advantech1973!') # replace with user credentials
+    pswd.send_keys('') # replace with user credentials
 
     driver.find_element_by_xpath('/html/body/div[2]/div/div/div[1]/form/div/span/input[1]').click()
     time.sleep(2)

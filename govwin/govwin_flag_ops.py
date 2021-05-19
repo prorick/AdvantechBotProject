@@ -3,10 +3,11 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
-from datetime import date, timedelta
+from datetime import datetime
 import time
 import os
 import schedule
+import random
 
 # constant variables (change if needed)
 USERNAME = "eramond@advantechglobal.org"        # advantech email
@@ -14,6 +15,11 @@ PASSWORD = "Advantech1973!"                     # govwin password
 SEARCH_KEY = "Lockheed Martin"                  # company
 MIN_DAYS = 180                                  # lower bound for oppys in days
 MAX_DAYS = 720                                  # upper bound for oppys in days
+# maybe something that checks with NAICS codes
+
+# Function definition to generate random numbers within range (used for times)
+def randint(i, j):
+    return random.uniform(i, j)
 
 # Function definition for entire bot process - allows for scheduling
 def bot():
@@ -46,15 +52,24 @@ def bot():
     #    print('No welcome message')
     search = driver.find_element_by_xpath('/html/body/div[1]/header/div[2]/div[2]/div[1]/form/div/input') #updated
     search.send_keys(SEARCH_KEY + Keys.ENTER) # search for specific keywords
-    time.sleep(10)
+    time.sleep(randint(1, 4))
     driver.find_element_by_xpath('/html/body/div[4]/div[2]/div/div[2]/div/div[2]/div[11]/div[2]/ul/li[1]/a[2]').click() # this must be changed based on the company (updated)
     # driver.find_element_by_xpath('/html/body/div[4]/div[2]/div/div[1]/ul[2]/li[1]/ul/li/a').click() # this removes keywords
-    time.sleep(10)
+    time.sleep(randint(1, 4))
     link_count = 2
     main_window = driver.current_window_handle
-
     
-    while True: # loop to go into each contract, check location and date, and if in range and in SD or unspecified, flag the op. Will loop through for a while, best to manually exit
+    # option[4] is soliciation date 
+    sort_by_sol_date = driver.find_element_by_xpath('/html/body/div[4]/div[3]/div[1]/div/div[3]/div[1]/div/select[1]/option[4]') 
+    sort_by_sol_date.click()
+    time.sleep(0.5)
+    # option[1] is new-old
+    sort_new_old = driver.find_element_by_xpath('/html/body/div[4]/div[3]/div[1]/div/div[3]/div[1]/div/select[5]/option[1]')
+    sort_new_old.click()
+    time.sleep(0.5)
+
+    while (link_count < 102): # loop to go into each contract, check location and date, and if in range and in SD or unspecified, flag the op. Will loop through for a while, best to manually exit
+        print("-------")
         # selects the drop down menu for each opportunity to flag it
         # cur = driver.find_element_by_xpath('/html/body/div[4]/div[3]/div[1]/div/div[5]/div[2]/div/div[3]/div/div[2]/table/tbody/tr[' + str(link_count) +']/td[4]/a') #maybe broken
         """
@@ -66,31 +81,75 @@ def bot():
         2. if not, check if the date is within the valid range
         mark it based on a priority level
         """
+
+        """
+        previous string to contatenate 
+        add onto the rest
+
+        dates
+        /html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[2]/div[2]/div[2]/table/tbody/tr[1]/td
+        /html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[3]/div[2]/div[2]/table/tbody/tr[1]/td
+        /html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[5]/div[2]/div[2]/table/tbody/tr[1]/td
+
+        """
+
         # mark = driver.find_element_by_class_name
         # drop down menu menu text 
         cur = driver.find_element_by_xpath('/html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[' + str(link_count) + ']/div[2]/div[1]/table/tbody/tr[1]/td/div/div/a')
         marked = int(cur.text) != 100       # marked oportunities have 100 text, unmarked have their priority level
+        print(cur.text, marked)
         if (marked):
             link_count += 1
             continue
         else:
-            date = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[3]/div/div/div[1]/div[1]/div[4]/table/tbody/tr[2]/td').text #updated
-            # all soliciation dates are in format MM/YYYY
-            oppy_month = data[0:2]
-            oppy_year = data[3:7]
+            sol_date = driver.find_element_by_xpath('/html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[' + str(link_count) + ']/div[2]/div[2]/table/tbody/tr[1]/td').text
+            print("Date:", sol_date)
+            # date = driver.find_element_by_xpath('/html/body/div[4]/div[4]/div/div[' + str(link_count) + ']/div/div/div[1]/div[1]/div[4]/table/tbody/tr[2]/td').text #updated
+            if "deltek estimate" in sol_date.lower():
+                # extract month and year from date text
+                # all ecent soliciation dates are in format MM/YYYY (if they contain deltek estimate)
+                oppy_month = int(sol_date[0:2])
+                oppy_year = int(sol_date[3:7])
+            else:
+                # typically opportunities that are full dates and don't have deltek estimates have deadlines that are already passed
+                # oppy_day = date[0:2]
+                # oppy_month = date[3:5]
+                # oppy_year = date[6:10]
+                continue
+
             # set the 1st of each month as the default day since they aren't available
-            diff = date(oppy_year, oppy_month, 1) - date.today()    # calculate difference from
-            if diff >= timedelta(days = MIN_DAYS) and diff <= timedelta(days = MAX_DAYS):     # matched the time range
+            diff = (datetime(oppy_year, oppy_month, 1) - datetime.now()).days
+            print(diff, "days")
+            if diff >= MIN_DAYS and diff <= MAX_DAYS:     # matched the time range
                 # mark opportunity as 3 by default, change later if needed
                 print("MARK OPPORTUNITY")
                 # cur.send_keys(Keys.CONTROL + Keys.RETURN)
+                """
+                drop downs - cur
+                checkboxes (data level 1)
+                /html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[12]/div[2]/div[1]/table/tbody/tr[1]/td/div/div/div/div/div/span[1]/a[2]
+                /html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[13]/div[2]/div[1]/table/tbody/tr[1]/td/div/div/div/div/div/span[1]/a[2]
+
+                cur.click()
+
+
+                """
+                time.sleep(randint(0.5, 1))
+                checkbox = driver.find_element_by_xpath('/html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[' + str(link_count) + ']/div[2]/div[1]/table/tbody/tr[1]/td/div/div/div/div/div/span[1]/a[2]')
+                cur.click() 
+                time.sleep(randint(0.5, 1))
+                checkbox.click()               
+                continue
             else:
+                print("opportunity not marked")
                 link_count += 1
                 continue
 
-        print(str(cur.text), str(marked))
+        # print(str(cur.text), str(marked))
 
         # drop down menu
+        # /html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[2]/div[2]/div[2]/table/tbody/tr[1]/td
+        # /html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[3]/div[2]/div[2]/table/tbody/tr[1]/td
         # /html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[2]/div[2]/div[1]/table/tbody/tr[1]/td/div/div/a
         # /html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[3]/div[2]/div[1]/table/tbody/tr[1]/td/div/div/a
         # /html/body/div[4]/div[3]/div[1]/div/div[5]/div[5]/div/div[5]/div[2]/div[1]/table/tbody/tr[1]/td/div/div/a
@@ -102,7 +161,8 @@ def bot():
         div class markingLevelsContainer
         data-level = 1, 2, 3, 4, 5
         """
-        
+
+
         # old code
         # cur.send_keys(Keys.CONTROL + Keys.RETURN)
         # driver.switch_to.window(driver.window_handles[1]) # not sure what this is doing

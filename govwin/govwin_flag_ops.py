@@ -10,8 +10,8 @@ import schedule
 import random
 
 # constant variables (change if needed)
-USERNAME = "eramond@advantechglobal.org"        # advantech email
-PASSWORD = "Advantech1973!"                     # govwin password
+USERNAME = ""        # advantech email
+PASSWORD = ""                     # govwin password
 SEARCH_KEY = "Lockheed Martin"                  # company
 MIN_DAYS = 180                                  # lower bound for oppys in days
 MAX_DAYS = 720                                  # upper bound for oppys in days

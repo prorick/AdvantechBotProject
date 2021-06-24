@@ -48,7 +48,7 @@ def bot():
         print('No auth needed')
 
     searcher = driver.find_element_by_xpath('/html/body/div[5]/header/div/div/div/div[1]/div[2]/input')
-    searcher.send_keys('team member')
+    searcher.send_keys('team member lead associate')
 
     searcher.send_keys(Keys.RETURN)
 
@@ -62,9 +62,9 @@ def bot():
 
     #note:10 connections per page
     li_count = 1
-    while (li_count != 12):
+    while (li_count != 11):
         try:
-            title = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[2]/ul/li[' + str(li_count) + ']/div/div/div[2]/div[1]/div[2]/div/div[1]')
+            title = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[1]/ul/li[' + str(li_count) +']/div/div/div[2]/div[1]/div[2]/div/div[1]')
             actions = ActionChains(driver)
             actions.move_to_element(title).perform()
             temp = title.text
@@ -74,17 +74,16 @@ def bot():
             
 
 
-            if "Booz Allen" in temp and ("Lead Associate" in temp or "Senior Associate" in temp or "Sr. Associate" in temp or "Vice President" in temp or "Program Manager" in temp or "VP" in temp or "V.P." in temp): # and criteria in temp: #need criteria from pamela
-                    name = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[2]/ul/li[' + str(li_count) +']/div/div/div[2]/div[1]/div[1]/div/span[1]/span/a/span/span[1]')
+            if "PetSmart" in temp and ("Lead Associate" in temp or "Senior Associate" in temp or "Sr. Associate" in temp or "Vice President" in temp or "Program Manager" in temp or "VP" in temp or "V.P." in temp): # and criteria in temp: #need criteria from pamela
+                    name = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[1]/ul/li['+ str(li_count) +']/div/div/div[2]/div[1]/div[1]/div/span[1]/span/a/span/span[1]')
                     name = str(name.text)
                     print(name)
                     name = name.split(' ')
                     name = name[0]
 
-                    driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[2]/ul/li[' + str(li_count) + ']/div/div/div[2]/div[1]/div[1]/div/span[1]/span/a/span/span[1]').click()
+                    driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[1]/ul/li[' + str(li_count) + ']/div/div/div[3]/div/button').click()
 
 
-                    driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[2]/ul/li[' + str(li_count) +']/div/div/div[3]/div/button/span').click()
                     driver.find_element_by_xpath('/html/body/div[3]/div/div/div[3]/button[1]/span').click()
                     #this will be the code for checking the blue button
                     # checkButton = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div/div/div/div[2]/div/div/main/div/section/div[2]/div[3]/div/button')

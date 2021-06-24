@@ -19,7 +19,6 @@ def bot():
     driver.get('https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin')
     time.sleep(1)
 
-
     # enter login info
     user = driver.find_element_by_xpath('/html/body/div/main/div[2]/div[1]/form/div[1]/input')
     user.send_keys('alanparkerc@gmail.com')
@@ -27,18 +26,6 @@ def bot():
     pswd.send_keys('Calikona123')
     driver.find_element_by_xpath('/html/body/div/main/div[2]/div[1]/form/div[3]/button').click()
     time.sleep(3)
-    # submit form, try catch because it was having issues finding the button by a single absolute path
-    # try:
-    #     driver.find_element_by_xpath('/html/body/div/main/div[2]/form/div[4]').click()
-    # except Exception:
-    #     try:
-    #         driver.find_element_by_xpath('/html/body/div/main/div[2]/form/div[3]/button').click()
-    #     except Exception:
-    #         driver.find_element_by_xpath('//*[@id="app__container"]/main/div[2]/form/div[4]/button').click()
-    #         try:
-    #             driver.find_element_by_link_text('Sign in').click()
-    #         except Exception:
-    #             quit()
 
     time.sleep(1)
     # try catch for mobile authentication, seems unnecessary as of now
@@ -48,74 +35,83 @@ def bot():
         print('No auth needed')
 
     searcher = driver.find_element_by_xpath('/html/body/div[5]/header/div/div/div/div[1]/div[2]/input')
-    searcher.send_keys('team member lead associate')
+    searcher.send_keys('tester')
 
     searcher.send_keys(Keys.RETURN)
 
     time.sleep(5)
-    # driver.find_element_by_xpath('/html/body/div[7]/div[3]/div/div/div/div/div/aside/div/div/div[1]/section/div/div[1]/a').click()
-    # time.sleep(3)
-    # need a way to both A: scroll through every single connection  B: search for specific line in header of title
-
-    # NEED CRITERIA AND MESSAGE TO SEND
-
-
+    driver.find_element_by_partial_link_text('all people results').click()
+    time.sleep(5)
+    second_count = 1
+    while (second_count != 11):
     #note:10 connections per page
-    li_count = 1
-    while (li_count != 11):
-        try:
-            title = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[1]/ul/li[' + str(li_count) +']/div/div/div[2]/div[1]/div[2]/div/div[1]')
-            actions = ActionChains(driver)
-            actions.move_to_element(title).perform()
-            temp = title.text
-            # if li_count < 123:
-            #     li_count += 1
-            #     continue
-            
+        li_count = 1
+        while (li_count != 11):
+            try:
+                title = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[2]/ul/li['+ str(li_count) +']/div/div/div[2]/div[1]/div[2]/div/div[1]')
+                actions = ActionChains(driver)
+                actions.move_to_element(title).perform()
+                temp = title.text
 
+                if "follow" in temp and ("LinkedIn" in temp or "Associate" in temp or "Lead Associate" in temp or "Senior Associate" in temp or "Sr. Associate" in temp or "Vice President" in temp or "Program Manager" in temp or "VP" in temp or "V.P." in temp): # and criteria in temp: #need criteria from pamela
+                        name = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[2]/ul/li[' + str(li_count) +']/div/div/div[2]/div[1]/div[1]/div/span[1]/span/a/span/span[1]')
+                        name = str(name.text)
+                        print(name)
+                        name = name.split(' ')
+                        name = name[0]
 
-            if "PetSmart" in temp and ("Lead Associate" in temp or "Senior Associate" in temp or "Sr. Associate" in temp or "Vice President" in temp or "Program Manager" in temp or "VP" in temp or "V.P." in temp): # and criteria in temp: #need criteria from pamela
-                    name = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[1]/ul/li['+ str(li_count) +']/div/div/div[2]/div[1]/div[1]/div/span[1]/span/a/span/span[1]')
-                    name = str(name.text)
-                    print(name)
-                    name = name.split(' ')
-                    name = name[0]
+                        testButton = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[2]/ul/li['+str(li_count)+']/div/div/div[3]/button/span')
+                        testButton = str(testButton.text)
+                        if(testButton != "Connect"):
 
-                    driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[1]/ul/li[' + str(li_count) + ']/div/div/div[3]/div/button').click()
+                            #to do
+                            driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[2]/ul/li['+str(li_count)+']/div/div/div[2]/div[1]/div[1]/div/span[1]/span/a/span/span[1]').click()
+                            time.sleep(4)
+                            try:
+                                
+                                driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div/div/div/div[2]/div/div/main/div/section/div[2]/div[3]/div/a').click()
 
+                                msgb = driver.find_element_by_xpath('/html/body/div[5]/aside/div[2]/div[1]/div[4]/div[3]/form/div[3]/div/div/div[1]/p/br')
+                                time.sleep(2)
+                                msgb.send_keys(name + 'Hello \n')
+                                time.sleep(3)
+                                driver.find_element_by_xpath('/html/body/div[5]/aside/div[2]/div[1]/div[4]/div[3]/form/footer/div[2]/div/button').click()
+                                driver.execute_script("window.history.go(-1)")
 
-                    driver.find_element_by_xpath('/html/body/div[3]/div/div/div[3]/button[1]/span').click()
-                    #this will be the code for checking the blue button
-                    # checkButton = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div/div/div/div[2]/div/div/main/div/section/div[2]/div[3]/div/button')
-                    # checkButton = str(checkButton.text)
-                    # if(checkButton == "Connect"):
-                    #     driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div/div/div/div[2]/div/div/main/div/section/div[2]/div[3]/div/button').click
-                    #     li_count += 1
-                    #     driver.execute_script("window.history.go(-1)")
-                    # else:
-                    #     driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div/div/div/div[2]/div/div/main/div/section/div[2]/div[3]/div/div[1]/button/span').click()
-                    # if ():
+                                time.sleep(2)
+                                li_count += 1
+                            
+                            except Exception:
+                                print('oops')
+                                driver.execute_script("window.history.go(-1)")
+                                li_count += 1
+                                continue
+                        else:
+                        #clicks on the add a note button
+                            driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div/div[2]/ul/li['+str(li_count)+']/div/div/div[3]/div/button/span').click()
+                            driver.find_element_by_xpath('/html/body/div[3]/div/div/div[3]/button[1]/span').click()
+                            msgb = driver.find_element_by_xpath('/html/body/div[3]/div/div/div[2]/div[1]/textarea')
+                            time.sleep(2)
+                            msgb.send_keys(name + 'Hello \n')
+                            time.sleep(3)
+                            driver.find_element_by_xpath('/html/body/div[3]/div/div/div[3]/button[2]/span').click()
 
-                    # if ():
-
-
-                    #message in 4th position after pending    
-                    msgb = driver.find_element_by_xpath('/html/body/div[3]/div/div/div[2]/div[1]/textarea')
-                    time.sleep(2)
-                    msgb.send_keys(name + '- Glad to connect here. \n')
-                    time.sleep(2)
-                    driver.find_element_by_xpath('/html/body/div[3]/div/div/div[3]/button[2]/span').click()
-
-
-                    time.sleep(2)
+                            time.sleep(2)
+                            li_count += 1
+                else:
+                    print('incorrect associate')
                     li_count += 1
-            else:
-                print('incorrect associate')
+            except Exception:
+                print('failed to find title')
                 li_count += 1
+                continue
+        second_count += 1
+        try:
+            driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div /div[5]/div/div/button[2]').click()
+            #//*[@id="ember583"] 
+            #This is where it gets cut off
+            #/html/body/div[5]/div[3]/div/div[1]/div/div[1]/main/div/div /div[2]/div[2]/div/button[2]
         except Exception:
-            print('failed to find title')
-            li_count += 1
-            continue
+            pass
 
 bot()
-
